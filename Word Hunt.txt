@@ -1,0 +1,68 @@
+import random
+import string
+
+# Function to create a random grid of letters
+def create_grid(size):
+    return [[random.choice(string.ascii_uppercase) for _ in range(size)] for _ in range(size)]
+
+# Function to display the grid
+def display_grid(grid):
+    for row in grid:
+        print(' '.join(row))
+    print()
+
+# Function to check if the word is in the grid
+def find_word(grid, word):
+    size = len(grid)
+    word_len = len(word)
+    
+    # Horizontal and vertical checks
+    for i in range(size):
+        for j in range(size):
+            if j + word_len <= size:
+                # Horizontal (right)
+                if ''.join(grid[i][j:j+word_len]) == word:
+                    return True
+            if i + word_len <= size:
+                # Vertical (down)
+                if ''.join([grid[i+k][j] for k in range(word_len)]) == word:
+                    return True
+
+    # Diagonal checks
+    for i in range(size):
+        for j in range(size):
+            if i + word_len <= size and j + word_len <= size:
+                # Diagonal (down-right)
+                if ''.join([grid[i+k][j+k] for k in range(word_len)]) == word:
+                    return True
+            if i + word_len <= size and j - word_len + 1 >= 0:
+                # Diagonal (down-left)
+                if ''.join([grid[i+k][j-k] for k in range(word_len)]) == word:
+                    return True
+
+    return False
+
+# Main game function
+def word_hunt_game():
+    size = 10  # Size of the grid
+    grid = create_grid(size)
+    display_grid(grid)
+
+    words = ["PYTHON", "JAVA", "RUBY", "SWIFT", "KOTLIN", "JAVASCRIPT"]
+    random.shuffle(words)
+
+    score = 0
+    for word in words:
+        print(f"Find the word: {word}")
+        found = find_word(grid, word)
+        if found:
+            print(f"Congrats! You found {word}.\n")
+            score += 1
+        else:
+            print(f"Sorry, {word} is not in the grid.\n")
+
+    print(f"Game Over! Your score is {score}/{len(words)}")
+
+# Run the game
+if __name__ == "__main__":
+    word_hunt_game()
